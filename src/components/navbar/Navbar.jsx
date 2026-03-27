@@ -4,13 +4,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { SiShopee } from "react-icons/si";
 
 const Navbar = () => {
-  let user_id = localStorage.getItem("userid");
+  let user_id = localStorage.getItem("userId");
   console.log(user_id);
 
   let navigate = useNavigate();
 
   let logout = () => {
-    localStorage.removeItem("userid");
+    localStorage.removeItem("userId");
     navigate("/");
   };
 

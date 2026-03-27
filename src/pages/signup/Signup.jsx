@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./Signup.module.css";
 import axios from "axios";
 
 const Signup = () => {
   const [signupuser, setSignupuser] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
   });
@@ -12,19 +12,25 @@ const Signup = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSignupuser({ ...signupuser, [name]: value });
+    console.log(signupuser);
   };
 
   const formSubmit = async (e) => {
     e.preventDefault();
-    console.log(signupuser);
     try {
-      let resp = await axios.post("http://localhost:6060/users", signupuser);
-      console.log(resp);
-      console.log("data sent successfully");
-      setSignupuser({ username: "", email: "", password: "" }); // clear inputs
+      let resp = await axios.post("/api/signup", signupuser);
+      const { data, message, status } = resp.data;
+      if (data) {
+        localStorage.setItem("userId",data.id)
+        alert(message);
+      }
+      else if (!data && status<500) {
+        alert(message);
+      }
+      setSignupuser({ name: "", email: "", password: "" }); // clear inputs
     } catch (error) {
-      console.log(error);
-      console.log("error while sending data");
+      const errMsg = error.response?.data?.message || error.message;
+      alert(errMsg);
     }
   };
 
@@ -34,12 +40,12 @@ const Signup = () => {
         <h2>Create Your Account</h2>
         <p>Join us and start shopping for fun!</p>
         <div className={styles.formGroup}>
-          <label>Username</label>
+          <label>Full name</label>
           <input
             type="text"
-            placeholder="Enter username"
-            name="username"
-            value={signupuser.username}
+            placeholder="Enter your full name"
+            name="name"
+            value={signupuser.name}
             onChange={handleChange}
           />
         </div>

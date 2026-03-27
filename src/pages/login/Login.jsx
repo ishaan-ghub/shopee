@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./Login.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,6 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [allusers, setAllusers] = useState([]);
 
   let navigate = useNavigate()
 
@@ -16,36 +15,27 @@ const Login = () => {
     const { name, value } = e.target;
     setLoginuser({ ...loginuser, [name]: value });
   };
-
-  async function getSignupUsers() {
-    let { data } = await axios.get("http://localhost:6060/users");
-    console.log(data); //[{},{},{}]
-    setAllusers(data);
-  }
-
-  useEffect(() => {
-    getSignupUsers();
-  }, []);
-
-  const formSubmit = (e) => {
+  const formSubmit = async (e) => {
     e.preventDefault();
-    console.log(loginuser);
-
-    let authUser = allusers.find((user) => {
-      return (
-        user.email === loginuser.email && user.password === loginuser.password
-      );
-    });
-
-    if (authUser) {
-      console.log("login successful");
-      localStorage.setItem("userid",authUser.id)
-      navigate("/allproducts")
-    } else {
-      console.log("Please signup");
-    }
+    try {
+      const res = await axios.post("/api/login", loginuser);
+      const { data, message, status } = res.data;
+      if (data) {
+        alert(message);
+        localStorage.setItem("userId", data.id)
+        navigate("/allproducts")
+      }
+      else if (!data && status < 500) {
+        alert(message);
+      }
+      else {
+        alert(message);
+      }
+    } catch (error) {
+      const errMsg = error.response?.data?.message || error.message;
+      alert(errMsg);
+    };
   };
-
   return (
     <div className={styles.loginContainer}>
       <form onSubmit={formSubmit} className={styles.loginForm}>
@@ -78,5 +68,4 @@ const Login = () => {
     </div>
   );
 };
-
 export default Login;
