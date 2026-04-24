@@ -1,7 +1,5 @@
 # Shopee
-
-A full-stack e-commerce starter application built with React (Vite) on the frontend and Express + MySQL on the backend.  
-The app includes user authentication (signup/login), route-based navigation, and a product listing page powered by Fake Store API.
+A full-stack e-commerce starter application built with React (Vite) on the frontend and Express + MySQL on the backend.
 
 ## Features
 
@@ -112,5 +110,5 @@ Base URL: `http://localhost:6060/api`
 
 ## Notes
 
-- Frontend requests to `/api/*` are proxied to `http://localhost:6060` via `vite.config.js`.
+- Frontend requests to `/api/` are proxied to `http://localhost:6060` via `vite.config.js`.
 - Product data currently comes from [Fake Store API](https://fakestoreapi.com/).
