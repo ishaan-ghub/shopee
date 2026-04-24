@@ -45,6 +45,7 @@ The app includes user authentication (signup/login), route-based navigation, and
    MYSQL_USER=your_mysql_user
    MYSQL_PASSWORD=your_mysql_password
    MYSQL_DB=your_database_name
+   JWT_SECRET=a_long_random_secret
    ```
 
 4. Create required database table:
@@ -88,7 +89,7 @@ Locally previews the production build created by the build script.
 - `npm run lint`
 Checks your code for linting errors using ESLint.
 
-- ``note: to make the scripts work as expected replace the scripts in your package.json file with this``:
+- ``note: to make the commands work as expected replace the scripts in your package.json file with this``:
 "scripts": {
    "ui": "vite",
    "server": "npx nodemon backend/routers.js",
@@ -107,6 +108,7 @@ Base URL: `http://localhost:6060/api`
 - `GET /get-user/:id` - Fetch user by id
 - `POST /signup` - Register a new user
 - `POST /login` - Authenticate a user
+- `POST /logout` - logout the user
 
 ## Notes
 

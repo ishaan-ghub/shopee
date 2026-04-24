@@ -2,7 +2,7 @@ import { getAllUsers, getUser, loginUser, signup } from "./services.js";
 import { sendResponse } from "./utility.js";
 import express from "express";
 
-const router = express.Router()
+const router = express.Router();
 
 router.get("/get-all-users", async (_req, res) => {
   try {
@@ -42,6 +42,15 @@ router.post("/signup", async (req, res) => {
   try {
     const { email, password, name } = req.body;
     return await signup(res, email, password, name);
+  } catch (error) {
+    return sendResponse(res, 500, error.message);
+  }
+});
+
+router.post("/logout", (_req, res) => {
+  try {
+    res.clearCookie("token");
+    return sendResponse(res, 200, "successfully logged out");
   } catch (error) {
     return sendResponse(res, 500, error.message);
   }

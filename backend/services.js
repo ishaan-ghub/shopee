@@ -1,6 +1,6 @@
 import conn from "./dbConfig.js";
 import bcrypt from "bcrypt";
-import { existingEmail, sendResponse } from "./utility.js";
+import { existingEmail, sendResponse, setAuthToken } from "./utility.js";
 
 export async function getAllUsers() {
   const [res] = await conn.execute("SELECT * FROM shopUsers");
@@ -29,12 +29,13 @@ export async function loginUser(res, email, password) {
     return sendResponse(res, 400, "Incorrect password");
   }
   const data = { id: user.id, name: user.Name, email: email };
+  setAuthToken(email, "1hr", res);
   return sendResponse(res, 200, "logged in successfully", data);
 }
 
 export async function signup(res, email, password, name) {
   try {
-    if (!(email || email.trim()) || !(password || password.trim())) {
+    if (!email.trim() || ! password.trim()) {
       return sendResponse(res, 401, "Email and password are required fields");
     }
     const hashedpass = await bcrypt.hash(password, 10);
@@ -48,6 +49,7 @@ export async function signup(res, email, password, name) {
     );
     const data = { id: user.insertId, email: email, name: name };
     return sendResponse(res, 201, "User registered successfully", data);
+    setAuthToken(email, "1hr", res);
   } catch (error) {
     if (error.message?.includes("email_valid")) {
       return sendResponse(res, 400, "Invalid email entered");
@@ -55,27 +57,3 @@ export async function signup(res, email, password, name) {
     return sendResponse(res, 500, error.message);
   }
 }
-
-// // not used
-// export async function updateUser(id, updates) {
-//   // 1. Get the names of the fields being updated (e.g., ["email", "username"])
-//   const keys = Object.keys(updates);
-//   if (keys.length === 0) return null; // Nothing to update
-
-//   // 2. Build the "SET column1=?, column2=?" string
-//   const setClause = keys.map((key) => `${key} = ?`).join(", ");
-
-//   // 3. Collect the values in the same order as the keys
-//   const values = Object.values(updates);
-
-//   // 4. Run the query (adding the ID at the end for the WHERE clause)
-//   const [result] = await conn.execute(
-//     `UPDATE users SET ${setClause} WHERE id = ?`,
-//     [...values, id],
-//   );
-
-//   return result.affectedRows > 0;
-// }
-
-// const user = await signup("abey@gmail.com", "abhay12345", "Abhay");
-// console.log(user);

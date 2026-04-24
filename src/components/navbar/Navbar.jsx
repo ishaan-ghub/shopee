@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import styles from "./Navbar.module.css";
 import { NavLink, useNavigate } from "react-router-dom";
 import { SiShopee } from "react-icons/si";
+import axios from "axios";
 
 const Navbar = () => {
   let user_id = localStorage.getItem("userId");
@@ -9,9 +10,17 @@ const Navbar = () => {
 
   let navigate = useNavigate();
 
-  let logout = () => {
-    localStorage.removeItem("userId");
-    navigate("/");
+  let logout = async () => {
+    try {
+      let user = await axios.post("/api/logout");
+      console.log(user.data);
+      localStorage.removeItem("userId");
+      alert(user.data.message)
+      navigate("/");
+    } catch (error) {
+      const errMsg = error.response?.data?.message || error.message;
+      alert(errMsg);
+    }
   };
 
   return (
